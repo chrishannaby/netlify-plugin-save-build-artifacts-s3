@@ -73,5 +73,8 @@
     "environmentVariables": {
       "FORCE_COLOR": "1"
     }
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1136.0"
   }
 }
