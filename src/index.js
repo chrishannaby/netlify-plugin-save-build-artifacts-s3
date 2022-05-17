@@ -7,10 +7,11 @@ function execute(command) {
   return utils.promisify(exec)(command);
 }
 
-function uploadToS3(fileName) {
+async function uploadToS3(fileName) {
   const s3 = new AWS.S3({
     accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY,
+    region: "us-east-1"
   });
   console.log(process.cwd());
   const fileContent = fs.readFileSync(fileName);
@@ -19,7 +20,7 @@ function uploadToS3(fileName) {
     Key: fileName,
     Body: fileContent,
   };
-  s3.upload(params, (err, data) => {
+  s3.putObject(params, (err, data) => {
     if (err) {
       console.error(err);
     }
@@ -27,7 +28,7 @@ function uploadToS3(fileName) {
   });
 }
 
-export const onPreBuild = async function ({ constants: { PUBLISH_DIR } }) {
+export const onSuccess = async function ({ constants: { PUBLISH_DIR } }) {
   const tarName = `${process.env.COMMIT_REF}.tgz`;
   await execute(`tar czf ${tarName} ${PUBLISH_DIR}`);
   uploadToS3(tarName);
