@@ -1,5 +1,6 @@
 import { execSync } from 'child_process'
 import fs from 'fs'
+import { unlink } from 'fs/promises'
 import AWS from 'aws-sdk'
 
 async function uploadToS3(fileName) {
@@ -29,4 +30,5 @@ export const onSuccess = async function ({ constants: { PUBLISH_DIR } }) {
     stdio: 'inherit',
   })
   await uploadToS3(tarName)
+  await unlink(tarName)
 }
