@@ -28,5 +28,5 @@ export const onSuccess = async function ({ constants: { PUBLISH_DIR } }) {
   execSync(`tar vczf ${tarName} ${PUBLISH_DIR}`, {
     stdio: 'inherit',
   })
-  uploadToS3(tarName)
+  await uploadToS3(tarName)
 }
