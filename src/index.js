@@ -1,5 +1,4 @@
-import { execSync } from 'child_process'
-import fs from 'fs'
+import { createReadStream } from 'fs'
 import { unlink } from 'fs/promises'
 import AWS from 'aws-sdk'
 
@@ -27,7 +26,7 @@ async function uploadToS3(fileName) {
     region: 'us-east-1',
     apiVersion: '2006-03-01',
   })
-  const fileStream = fs.createReadStream(fileName)
+  const fileStream = createReadStream(fileName)
   fileStream.on('error', function (err) {
     console.log('File Error', err)
   })
@@ -40,12 +39,13 @@ async function uploadToS3(fileName) {
   console.log(`${fileName} uploaded to ${data.Location}`)
 }
 
-export const onSuccess = async function ({ constants: { PUBLISH_DIR } }) {
+export const onSuccess = async function ({
+  constants: { PUBLISH_DIR },
+  utils: { run },
+}) {
   if (missingVar()) return
   const tarName = `${process.env.COMMIT_REF}.tgz`
-  execSync(`tar vczf ${tarName} ${PUBLISH_DIR}`, {
-    stdio: 'inherit',
-  })
+  await run.command(`tar vczf ${tarName} ${PUBLISH_DIR}`)
   await uploadToS3(tarName)
   await unlink(tarName)
 }
