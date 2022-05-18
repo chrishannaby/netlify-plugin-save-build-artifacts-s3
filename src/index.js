@@ -45,7 +45,7 @@ export const onSuccess = async function ({
 }) {
   if (missingVar()) return
   const tarName = `${process.env.COMMIT_REF}.tgz`
-  await run.command(`tar vczf ${tarName} ${PUBLISH_DIR}`)
+  await run.command(`tar vczf ${tarName} -C ${PUBLISH_DIR} .`)
   await uploadToS3(tarName)
   await unlink(tarName)
 }
