@@ -3,6 +3,22 @@ import fs from 'fs'
 import { unlink } from 'fs/promises'
 import AWS from 'aws-sdk'
 
+function missingVar() {
+  const vars = [
+    'MY_AWS_ACCESS_KEY_ID',
+    'MY_AWS_SECRET_ACCESS_KEY',
+    'MY_AWS_BUCKET_NAME',
+  ]
+  let missingVar = false
+  for (const envVar in vars) {
+    if (!process.env[envVar]) {
+      console.error(`Required environment variable is not present: ${envVar}`)
+      missingVar = true
+    }
+  }
+  return missingVar
+}
+
 async function uploadToS3(fileName) {
   console.log(`Uploading ${fileName} to S3`)
   const s3 = new AWS.S3({
@@ -25,6 +41,7 @@ async function uploadToS3(fileName) {
 }
 
 export const onSuccess = async function ({ constants: { PUBLISH_DIR } }) {
+  if (missingVar()) return
   const tarName = `${process.env.COMMIT_REF}.tgz`
   execSync(`tar vczf ${tarName} ${PUBLISH_DIR}`, {
     stdio: 'inherit',
