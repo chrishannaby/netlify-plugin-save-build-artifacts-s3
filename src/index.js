@@ -10,7 +10,7 @@ function missingVar() {
     'MY_AWS_BUCKET_NAME',
   ]
   let missingVar = false
-  for (const envVar in vars) {
+  for (const envVar of vars) {
     if (!process.env[envVar]) {
       console.error(`Required environment variable is not present: ${envVar}`)
       missingVar = true
