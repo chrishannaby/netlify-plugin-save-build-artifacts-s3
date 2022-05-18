@@ -19,12 +19,8 @@ async function uploadToS3(fileName) {
     Key: fileName,
     Body: fileStream,
   }
-  s3.putObject(params, (err, data) => {
-    if (err) {
-      console.error(err)
-    }
-    console.log(`${fileName} uploaded to ${data.Location}`)
-  })
+  const data = await s3.upload(params).promise()
+  console.log(`${fileName} uploaded to ${data.Location}`)
 }
 
 export const onSuccess = async function ({ constants: { PUBLISH_DIR } }) {
