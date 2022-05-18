@@ -1,4 +1,3 @@
-import utils from 'util'
 import { execSync } from 'child_process'
 import fs from 'fs'
 import AWS from 'aws-sdk'
@@ -9,13 +8,16 @@ async function uploadToS3(fileName) {
     accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY,
     region: 'us-east-1',
+    apiVersion: '2006-03-01',
   })
-  console.log(process.cwd())
-  const fileContent = fs.readFileSync(fileName)
+  const fileStream = fs.createReadStream(fileName)
+  fileStream.on('error', function (err) {
+    console.log('File Error', err)
+  })
   const params = {
     Bucket: process.env.MY_AWS_BUCKET_NAME,
     Key: fileName,
-    Body: fileContent,
+    Body: fileStream,
   }
   s3.putObject(params, (err, data) => {
     if (err) {

@@ -1,6 +1,6 @@
 {
   "name": "netlify-plugin-save-build-artifacts-s3",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Netlify Build plugin - {{description}}",
   "type": "module",
   "exports": "./src/index.js",
