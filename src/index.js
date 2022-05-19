@@ -40,12 +40,12 @@ async function uploadToS3(fileName) {
 }
 
 export const onSuccess = async function ({
-  constants: { PUBLISH_DIR },
+  constants: { PUBLISH_DIR, FUNCTIONS_DIST },
   utils: { run },
 }) {
   if (missingVar()) return
   const tarName = `${process.env.COMMIT_REF}.tgz`
-  await run.command(`tar vczf ${tarName} -C ${PUBLISH_DIR} .`)
+  await run.command(`tar vczf ${tarName} ${PUBLISH_DIR} ${FUNCTIONS_DIST}`)
   await uploadToS3(tarName)
   await unlink(tarName)
 }
