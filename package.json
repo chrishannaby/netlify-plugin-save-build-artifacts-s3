@@ -1,6 +1,6 @@
 {
   "name": "netlify-plugin-save-build-artifacts-s3",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Netlify Build plugin to upload the artifacts from a build to S3",
   "type": "module",
   "exports": "./src/index.js",
